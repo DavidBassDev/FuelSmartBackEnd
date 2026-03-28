@@ -2,7 +2,7 @@ const pool = require('../models/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const SECRET = 'fuelsmart_secret';
+const SECRET = process.env.JWT_SECRET || 'fuelsmart_secret';
 
 exports.register = async ({
   nombre_completo,
@@ -16,14 +16,14 @@ exports.register = async ({
 
   const result = await pool.query(
     `INSERT INTO usuario 
-    (nombre_completo, correo_electronico, password_hash, rol_id, creado_por)
+    (nombre_completo, correo_electronico, password_hash, id_rol, creado_por)
     VALUES ($1, $2, $3, $4, $5)
-    RETURNING id_usuario, nombre_completo, correo_electronico, rol_id`,
+    RETURNING id_usuario, nombre_completo, correo_electronico, id_rol`,
     [
       nombre_completo,
       correo_electronico,
       hashedPassword,
-      rol_id || 2, // 2 = cliente por defecto
+      rol_id || 1,
       creado_por || null
     ]
   );
@@ -41,7 +41,7 @@ exports.login = async ({ correo_electronico, password }) => {
         u.password_hash,
         r.nombre AS rol
      FROM usuario u
-     JOIN rol r ON u.rol_id = r.id_rol
+     JOIN rol r ON u.id_rol = r.id_rol
      WHERE u.correo_electronico = $1
      AND u.estado = true`,
     [correo_electronico]
@@ -69,7 +69,7 @@ exports.login = async ({ correo_electronico, password }) => {
 
   // generar token
   const token = jwt.sign(
-    { 
+    {
       id: user.id_usuario,
       rol: user.rol
     },
