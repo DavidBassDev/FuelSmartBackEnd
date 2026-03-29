@@ -20,6 +20,9 @@ app.use('/vehicles', vehicleRoutes);
 app.get('/', (req, res) => {
   res.json({ message: 'API funcionando' });
 });
+//ruta para el post del repostaje
+const refuelingRoutes = require('./routes/refueling.routes');
+app.use('/refueling', refuelingRoutes);
 
 const PORT = 3000;
 
