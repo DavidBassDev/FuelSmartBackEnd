@@ -10,6 +10,8 @@ exports.createRefueling = async ({
     galones,
     valor_total,
     odometro,
+    numero_soporte,
+    comentario,
     imagen_voucher
 }) => {
     try {
@@ -23,9 +25,11 @@ exports.createRefueling = async ({
         galones_suministrados,
         valor_dinero,
         odometro,
+        numero_soporte,
+        comentario,
         vaucher_url
       )
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
       RETURNING *;
     `;
 
@@ -37,6 +41,8 @@ exports.createRefueling = async ({
             galones,
             valor_total,
             odometro,
+            numero_soporte,
+            comentario,
             imagen_voucher
         ];
 

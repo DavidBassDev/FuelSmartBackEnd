@@ -41,7 +41,7 @@ exports.login = async ({ correo_electronico, password }) => {
         u.password_hash,
         r.nombre AS rol
      FROM usuario u
-     JOIN rol r ON u.id_rol = r.id_rol
+     JOIN rol r ON u.rol_id = r.id_rol
      WHERE u.correo_electronico = $1
      AND u.estado = true`,
     [correo_electronico]
