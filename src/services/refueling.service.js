@@ -55,3 +55,31 @@ exports.createRefueling = async ({
         throw error;
     }
 };
+
+//MOSTRAR REPOSTAJE BAJO CAJA MENOR
+exports.refuelingPettyCash = async ({ id_repostaje}) => {
+
+  const result = await pool.query(
+    `SELECT 
+        r.vehiculo_id,
+        r.id_repostaje,
+        r.fecha_repostaje,
+        r.galones_suministrados,
+        r.valor_dinero,
+        r.numero_soporte,
+        r.vaucher_url,
+        v.placa AS plate
+     FROM repostaje r
+     JOIN vehiculo v ON v.id_vehiculo = r.vehiculo_id
+     WHERE r.id_repostaje = $1`,
+    [id_repostaje]
+  );
+
+  if (result.rows.length === 0) {
+    throw new Error('repostaje no encontrado');
+  }
+
+ 
+
+  return result.rows[0];
+};

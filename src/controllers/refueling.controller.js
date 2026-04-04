@@ -42,3 +42,17 @@ exports.createRefueling = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+exports.getRefuelingPettyCash = async (req, res) => {
+  try {
+    const repostaje = await refuelingService.refuelingPettyCash({
+      id_repostaje: req.params.id,
+    });
+
+    res.json(repostaje);
+
+  } catch (error) {
+    console.error("Error:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -10,5 +10,11 @@ router.post(
   upload.single('imagen'), // nombre del campo que envía Flutter
   refuelingController.createRefueling
 );
+//MOSTRAR REPOSTAJE CAJA MENOR, PERO CON EL ID EN EL LINK
+router.get(
+  '/pettycash/:id',
+  authMiddleware,
+  refuelingController.getRefuelingPettyCash
+);
 
 module.exports = router;
