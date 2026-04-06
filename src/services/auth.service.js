@@ -87,3 +87,20 @@ exports.login = async ({ correo_electronico, password }) => {
     }
   };
 };
+//Cambiar contraseña usuario
+exports.changePassword = async ({ id_usuario, password }) => {
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const result = await pool.query(
+    `UPDATE usuario
+     SET password_hash = $1
+     WHERE id_usuario = $2
+     RETURNING nombre_completo, correo_electronico`,
+    [
+      hashedPassword,
+      id_usuario
+    ]
+  );
+
+  return result.rows[0];
+};

@@ -17,3 +17,28 @@ exports.login = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.changePassword = async (req, res) => {
+  try {
+    const id_usuario = req.user.id;
+    const { password } = req.body;
+
+    const result = await authService.changePassword({
+      id_usuario,
+      password,
+    });
+
+    res.json({
+      ok: true,
+      data: result
+    });
+
+  } catch (error) {
+    res.status(400).json({
+      ok: false,
+      message: error.message
+    });
+  }
+};
+
+
