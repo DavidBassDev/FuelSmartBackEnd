@@ -17,12 +17,17 @@ app.use('/auth', authRoutes);
 const vehicleRoutes = require('./routes/vehicle.routes');
 app.use('/vehicles', vehicleRoutes);
 
+//ruta de listar usuarios
+const userRoutes = require('./routes/users.routes');
+app.use('/users', userRoutes);
+
 app.get('/', (req, res) => {
   res.json({ message: 'API funcionando' });
 });
 //ruta para el repostaje
 const refuelingRoutes = require('./routes/refueling.routes');
 app.use('/refueling', refuelingRoutes);
+
 
 
 //exponer ruta de vauchers
