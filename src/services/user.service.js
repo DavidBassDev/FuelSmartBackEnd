@@ -29,7 +29,9 @@ ORDER BY u.id_usuario;
 
     const result = await pool.query(query);
 
-    return result.rows || [];
+    return {
+      users: result.rows || []
+    };
 
   } catch (error) {
     console.error("Error en listar usuarios:", error.message);
