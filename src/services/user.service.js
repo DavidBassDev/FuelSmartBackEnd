@@ -2,35 +2,37 @@ const pool = require('../models/db');
 
 //listar conductores
 exports.listDrivers = async ({ rol }) => {
-    try {
+  try {
 
-        if (rol !== "admin") {
-            throw new Error("No autorizado");
-        }
+    if (rol !== "admin") {
+      throw new Error("No autorizado");
+    }
 
-        const query = `
-      SELECT 
+    const query = `
+     SELECT 
   u.id_usuario,
   u.nombre_completo,
-  u.rol_id,
+  r.nombre AS rol,
   u.id_vehiculo,
   v.placa,
   uc.nombre AS nombre
 FROM usuario u
-LEFT JOIN cliente uc 
-  ON u.cliente_id = uc.id_cliente
+LEFT JOIN rol r 
+  ON u.rol_id = r.id_rol
 LEFT JOIN vehiculo v 
   ON u.id_vehiculo = v.id_vehiculo
-WHERE u.rol_id = $1
+LEFT JOIN cliente uc 
+  ON u.cliente_id = uc.id_cliente
+  WHERE r.nombre ='conductor'
 ORDER BY u.id_usuario;
     `;
 
-        const result = await pool.query(query);
+    const result = await pool.query(query);
 
-        return result.rows || [];
+    return result.rows || [];
 
-    } catch (error) {
-        console.error("Error en listar usuarios:", error.message);
-        throw error;
-    }
+  } catch (error) {
+    console.error("Error en listar usuarios:", error.message);
+    throw error;
+  }
 };
