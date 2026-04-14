@@ -4,7 +4,7 @@ const router = express.Router();
 const authMiddleware = require('../middlewares/authMiddleware');
 const vehiculoService = require('../services/vehicle.service');
 
-router.get('/listVehicles', authMiddleware, async (req, res) => {
+router.get('/listDrivers', authMiddleware, async (req, res) => {
   try {
 
     const vehiculos = await vehiculoService.listVehicle({
