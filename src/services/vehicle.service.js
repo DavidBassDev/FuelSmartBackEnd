@@ -1,6 +1,6 @@
 const pool = require('../models/db');
 
-exports.listVehicle = async ({ userId, rol }) => {
+exports.listVehicles = async ({ userId, rol }) => {
   try {
     let query = '';
     let params = [];
@@ -8,7 +8,7 @@ exports.listVehicle = async ({ userId, rol }) => {
     console.log("ROL:", rol);
     console.log("USER ID:", userId);
 
-    // DMIN → ve todos los vehículos
+    // ADMIN → ve todos los vehículos
     if (rol === "admin") {
       query = `
         SELECT 
@@ -76,7 +76,7 @@ exports.listVehicle = async ({ userId, rol }) => {
     return result.rows || [];
 
   } catch (error) {
-    console.error("Error en listVehicle:", error.message);
+    console.error("Error en listVehicles:", error.message);
     throw error;
   }
 };
