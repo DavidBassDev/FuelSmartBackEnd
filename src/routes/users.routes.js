@@ -18,4 +18,18 @@ router.get('/listDrivers', authMiddleware, async (req, res) => {
     }
 });
 
+router.get('/listSupervisor', authMiddleware, async (req, res) => {
+    try {
+        const users = await userService.listSupervisor({
+            userId: req.user.id,
+            rol: req.user.rol,
+        });
+
+        res.json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al listar usuarios' });
+    }
+});
+
 module.exports = router;

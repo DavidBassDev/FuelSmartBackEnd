@@ -16,9 +16,9 @@ exports.register = async ({
 
   const result = await pool.query(
     `INSERT INTO usuario 
-    (nombre_completo, correo_electronico, password_hash, id_rol, creado_por)
+    (nombre_completo, correo_electronico, password_hash, rol_id, creado_por)
     VALUES ($1, $2, $3, $4, $5)
-    RETURNING id_usuario, nombre_completo, correo_electronico, id_rol`,
+    RETURNING id_usuario, nombre_completo, correo_electronico, rol_id`,
     [
       nombre_completo,
       correo_electronico,
