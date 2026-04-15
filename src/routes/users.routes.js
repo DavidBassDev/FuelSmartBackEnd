@@ -32,10 +32,11 @@ router.get('/listSupervisor', authMiddleware, async (req, res) => {
         res.status(500).json({ message: 'Error al listar usuarios' });
     }
 });
-//listar todos los usuarios
-router.get('/listUsers', authMiddleware, async (req, res) => {
+
+//listar usuarios Administradores
+router.get('/listAdmin', authMiddleware, async (req, res) => {
     try {
-        const users = await userService.listUsers({
+        const users = await userService.listAdmin({
             userId: req.user.id,
             rol: req.user.rol,
         });

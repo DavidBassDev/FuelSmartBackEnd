@@ -81,7 +81,7 @@ ORDER BY u.id_usuario;
 };
 
 //listar todos los usuarios
-exports.listUsers = async ({ rol }) => {
+exports.listAdmin = async ({ rol }) => {
   try {
 
     if (rol !== "admin") {
@@ -89,7 +89,7 @@ exports.listUsers = async ({ rol }) => {
     }
 
     const query = `
-     SELECT 
+   SELECT 
   u.id_usuario,
   u.nombre_completo,
   r.nombre AS rol,
@@ -103,6 +103,7 @@ LEFT JOIN vehiculo v
   ON u.id_vehiculo = v.id_vehiculo
 LEFT JOIN cliente uc 
   ON u.cliente_id = uc.id_cliente
+  WHERE r.nombre = 'admin'
 ORDER BY u.id_usuario;
     `;
 
