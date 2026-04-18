@@ -38,6 +38,9 @@ app.use(
   express.static(path.join(__dirname, '../uploads'))
 );
 
+//SIMULACION DATOS DE TELEMETRIA GPS
+const telemetriaRoutes = require('./routes/telemetria.routes');
+app.use('/api/telemetria', telemetriaRoutes);
 
 const PORT = 3000;
 
