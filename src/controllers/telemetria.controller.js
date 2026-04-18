@@ -1,12 +1,6 @@
 const service = require('../services/telemetria.service');
 
-// endpoint base (para probar que funciona)
-const getTelemetria = async (req, res) => {
-  res.json({ message: 'endpoint telemetria activo' });
-};
-
-// endpoint mensual
-const getTelemetriaMensual = async (req, res) => {
+exports.getTelemetriaMensual = async (req, res) => {
   try {
     const { placa, mes, anio } = req.query;
 
@@ -22,14 +16,9 @@ const getTelemetriaMensual = async (req, res) => {
       anio: parseInt(anio)
     });
 
-    res.json(data || {});
+    res.json(data);
 
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-};
-
-module.exports = {
-  getTelemetria,
-  getTelemetriaMensual
 };

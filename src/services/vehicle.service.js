@@ -1,82 +1,32 @@
 const pool = require('../models/db');
 
-exports.listVehicles = async ({ userId, rol }) => {
+exports.getTelemetriaMensual = async ({ placa, mes, anio }) => {
   try {
-    let query = '';
-    let params = [];
+    let query = `
+      SELECT 
+        t.placa,
+        $2 AS mes,
+        $3 AS anio,
 
-    console.log("ROL:", rol);
-    console.log("USER ID:", userId);
+        COALESCE(SUM(t.distancia_km), 0) AS total_distancia_km,
+        COALESCE(SUM(t.tiempo_total_seg), 0) AS total_tiempo_seg,
+        COALESCE(SUM(t.tiempo_detenido_seg), 0) AS total_detenido_seg,
+        COALESCE(SUM(t.tiempo_ralenti_seg), 0) AS total_ralenti_seg
 
-    // ADMIN → ve todos los vehículos
-    if (rol === "admin") {
-      query = `
-        SELECT 
-          v.id_vehiculo, 
-          v.usuario_id,
-          v.placa, 
-          v.id_tipo_vehiculo,
-          tv.nombre AS tipo_vehiculo,
-          v.rendimiento_teorico,
-          v.rendimiento,
-          v.cupo_combustible,
-          COALESCE(STRING_AGG(p.nombre_proveedor, ', '), '') AS proveedores
-        FROM vehiculo v
-        LEFT JOIN tipo_vehiculo tv 
-          ON v.id_tipo_vehiculo = tv.id_tipovehiculo
-        LEFT JOIN vehiculo_proveedor vp 
-          ON v.id_vehiculo = vp.id_vehiculo
-        LEFT JOIN proveedor_combustible p 
-          ON vp.id_proveedor = p.id_proveedor
-        GROUP BY 
-          v.id_vehiculo, v.usuario_id, v.placa, 
-          v.id_tipo_vehiculo, tv.nombre,
-          v.rendimiento_teorico, v.rendimiento, v.cupo_combustible
-        ORDER BY v.id_vehiculo;
-      `;
-    }
+      FROM telemetria_gps t
+      WHERE t.placa = $1
+        AND t.fecha >= make_date($3, $2, 1)
+        AND t.fecha < (make_date($3, $2, 1) + INTERVAL '1 month')
+    `;
 
-    // CONDUCTOR → solo sus vehículos
-    else if (rol === "conductor") {
-      query = `
-        SELECT 
-          v.id_vehiculo,
-          v.usuario_id,
-          v.placa,
-          v.id_tipo_vehiculo,
-          tv.nombre AS tipo_vehiculo,
-          v.rendimiento_teorico,
-          v.rendimiento,
-          v.cupo_combustible,
-          COALESCE(STRING_AGG(p.nombre_proveedor, ', '), '') AS proveedores
-        FROM vehiculo v
-        JOIN tipo_vehiculo tv 
-          ON v.id_tipo_vehiculo = tv.id_tipovehiculo
-        LEFT JOIN vehiculo_proveedor vp 
-          ON v.id_vehiculo = vp.id_vehiculo
-        LEFT JOIN proveedor_combustible p 
-          ON vp.id_proveedor = p.id_proveedor
-        WHERE v.usuario_id = $1
-        GROUP BY 
-          v.id_vehiculo, v.usuario_id, v.placa, 
-          v.id_tipo_vehiculo, tv.nombre,
-          v.rendimiento_teorico, v.rendimiento, v.cupo_combustible
-        ORDER BY v.id_vehiculo;
-      `;
-
-      params = [userId];
-    }
-
-    else {
-      throw new Error(`Rol no permitido: ${rol}`);
-    }
+    const params = [placa, mes, anio];
 
     const result = await pool.query(query, params);
 
-    return result.rows || [];
+    return result.rows[0] || {};
 
   } catch (error) {
-    console.error("Error en listVehicles:", error.message);
+    console.error("Error en getTelemetriaMensual:", error.message);
     throw error;
   }
 };
