@@ -27,6 +27,27 @@ const listVehicles = async ({ userId, rol }) => {
   }
 };
 
+
+const listAllVehicles = async () => {
+  try {
+
+    let query;
+    let values = [];
+ 
+      query = `
+        SELECT placa FROM vehiculo
+      `;
+    
+
+    const { rows } = await pool.query(query, values);
+    return rows;
+
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 module.exports = {
-  listVehicles
+  listVehicles,
+  listAllVehicles
 };
