@@ -27,3 +27,4 @@ exports.getTelemetriaMensual = async ({ placa, mes, anio }) => {
 
   return result.rows[0];
 };
+
