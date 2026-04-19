@@ -42,6 +42,10 @@ app.use(
 const roleRoutes = require('./routes/role.routes');
 app.use('/roles', roleRoutes);
 
+//para listar clientes
+const clientRoutes = require('./routes/client.routes');
+app.use('/clients', clientRoutes);
+
 //SIMULACION DATOS DE TELEMETRIA GPS
 const telemetriaRoutes = require('./routes/telemetria.routes');
 app.use('/api/telemetria', telemetriaRoutes);
