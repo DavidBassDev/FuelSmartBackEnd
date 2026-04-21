@@ -118,3 +118,26 @@ ORDER BY u.id_usuario;
     throw error;
   }
 };
+
+
+//Editar usuario
+
+exports.editUser = async ({ id_usuario, rol_id, cliente_id, id_vehiculo }) => {
+
+  const result = await pool.query(
+    `UPDATE usuario
+     SET rol_id = $1,
+         cliente_id = $2,
+         id_vehiculo = $3
+     WHERE id_usuario = $4
+     RETURNING nombre_completo, rol_id`,
+    [
+      rol_id,
+      cliente_id,
+      id_vehiculo,
+      id_usuario
+    ]
+  );
+
+  return result.rows[0];
+};
