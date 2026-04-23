@@ -35,7 +35,7 @@ const listAllVehicles = async () => {
     let values = [];
  
       query = `
-        SELECT placa FROM vehiculo
+        SELECT id_vehiculo, placa FROM vehiculo
       `;
     
 

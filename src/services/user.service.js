@@ -130,7 +130,7 @@ exports.editUser = async ({ id_usuario, rol_id, cliente_id, id_vehiculo }) => {
          cliente_id = $2,
          id_vehiculo = $3
      WHERE id_usuario = $4
-     RETURNING nombre_completo, rol_id`,
+     RETURNING nombre_completo, rol_id, cliente_id, id_vehiculo`,
     [
       rol_id,
       cliente_id,
