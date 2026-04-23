@@ -50,21 +50,18 @@ exports.listSupervisor = async ({ rol }) => {
     }
 
     const query = `
-     SELECT 
+    SELECT 
   u.id_usuario,
   u.nombre_completo,
   r.nombre AS rol,
   u.id_vehiculo,
   v.placa,
-  uc.nombre AS nombre
+  uc.nombre AS nombre_proyecto
 FROM usuario u
-LEFT JOIN rol r 
-  ON u.rol_id = r.id_rol
-LEFT JOIN vehiculo v 
-  ON u.id_vehiculo = v.id_vehiculo
-LEFT JOIN cliente uc 
-  ON u.cliente_id = uc.id_cliente
-  WHERE r.nombre ='coordinador'
+LEFT JOIN rol r ON u.rol_id = r.id_rol
+LEFT JOIN vehiculo v ON u.id_vehiculo = v.id_vehiculo
+LEFT JOIN cliente uc ON u.cliente_id = uc.id_cliente
+WHERE r.nombre ='coordinador'
 ORDER BY u.id_usuario;
     `;
 
@@ -95,15 +92,12 @@ exports.listAdmin = async ({ rol }) => {
   r.nombre AS rol,
   u.id_vehiculo,
   v.placa,
-  uc.nombre AS nombre
+  uc.nombre AS nombre_proyecto
 FROM usuario u
-LEFT JOIN rol r 
-  ON u.rol_id = r.id_rol
-LEFT JOIN vehiculo v 
-  ON u.id_vehiculo = v.id_vehiculo
-LEFT JOIN cliente uc 
-  ON u.cliente_id = uc.id_cliente
-  WHERE r.nombre = 'admin'
+LEFT JOIN rol r ON u.rol_id = r.id_rol
+LEFT JOIN vehiculo v ON u.id_vehiculo = v.id_vehiculo
+LEFT JOIN cliente uc ON u.cliente_id = uc.id_cliente
+WHERE r.nombre = 'admin'
 ORDER BY u.id_usuario;
     `;
 
@@ -140,4 +134,23 @@ exports.editUser = async ({ id_usuario, rol_id, cliente_id, id_vehiculo }) => {
   );
 
   return result.rows[0];
+};
+
+exports.inactivateUser = async ({ id_usuario }) => {
+  try {
+
+    const result = await pool.query(
+      `UPDATE usuario
+       SET estado = false
+       WHERE id_usuario = $1
+       RETURNING nombre_completo, estado`,
+      [id_usuario]
+    );
+
+    return result.rows[0];
+
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };

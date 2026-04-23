@@ -50,11 +50,29 @@ router.get('/listAdmin', authMiddleware, async (req, res) => {
 
 // editar usuario
 router.put('/editUser', authMiddleware, async (req, res) => {
-  try {
-    const user = await userService.editUser(req.body);
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
+    try {
+        const user = await userService.editUser(req.body);
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 });
+
+//inactivar usuario
+router.put('/inactivateUser', authMiddleware, async (req, res) => {
+    try {
+
+        const user = await userService.inactivateUser(req.body);
+
+        res.status(200).json({
+            message: 'Usuario inactivado correctamente',
+            user
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(400).json({ error: error.message });
+    }
+});
+
 module.exports = router;
