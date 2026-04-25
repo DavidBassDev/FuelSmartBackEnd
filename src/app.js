@@ -50,6 +50,11 @@ app.use('/clients', clientRoutes);
 const telemetriaRoutes = require('./routes/telemetria.routes');
 app.use('/api/telemetria', telemetriaRoutes);
 
+//SIMULACION DE PROVEEDOR COMBUSTIBLE
+const fuelSupplierRouter = require('./routes/fuel.supplier.routes');
+app.use('/fuelSupplier', fuelSupplierRouter);
+
+
 const PORT = 3000;
 
 app.listen(PORT, () => {
