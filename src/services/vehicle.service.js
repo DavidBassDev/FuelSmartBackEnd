@@ -2,7 +2,6 @@ const pool = require('../models/db');
 
 const listVehicles = async ({ userId, rol }) => {
   try {
-
     let query;
     let values = [];
 
@@ -20,35 +19,53 @@ const listVehicles = async ({ userId, rol }) => {
 
     const { rows } = await pool.query(query, values);
     return rows;
-
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
-
 
 const listAllVehicles = async () => {
   try {
-
-    let query;
-    let values = [];
- 
-      query = `
-        SELECT id_vehiculo, placa FROM vehiculo
-      `;
-    
-
-    const { rows } = await pool.query(query, values);
+    const query = `SELECT id_vehiculo, placa FROM vehiculo`;
+    const { rows } = await pool.query(query);
     return rows;
-
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
+
+const createVehicle = async ({
+  usuario_id,
+  placa,
+  rendimiento_teorico,
+  cupo_combustible,
+  fecha_creacion,
+  creado_por,
+  id_tipo_vehiculo,
+}) => {
+  const result = await pool.query(
+    `INSERT INTO vehiculo 
+    (usuario_id, placa, rendimiento_teorico, cupo_combustible, fecha_creacion, creado_por, id_tipo_vehiculo, rendimiento, estado, fecha_actualizacion)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, 32, true, null)
+    RETURNING placa;`,
+    [
+      usuario_id,
+      placa,
+      rendimiento_teorico,
+      cupo_combustible,
+      fecha_creacion,
+      creado_por,
+      id_tipo_vehiculo,
+    ]
+  );
+
+  return result.rows[0];
+};
+
 module.exports = {
   listVehicles,
   listAllVehicles,
-  
+  createVehicle,
 };

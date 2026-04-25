@@ -40,3 +40,4 @@ exports.listAllVehicles = async (req, res) => {
     });
   }
 };
+
