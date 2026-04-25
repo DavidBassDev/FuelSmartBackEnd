@@ -156,21 +156,33 @@ exports.inactivateUser = async ({ id_usuario }) => {
 };
 
 
-//CREAR USUARIO
+// CREAR USUARIO
+const bcrypt = require('bcrypt');
 
-exports.createUser = async ({ nombre_completo, correo_electronico, password_hash, rol_id, creado_por,cliente,id_vehiculo }) => {
+exports.createUser = async ({
+  nombre_completo,
+  correo_electronico,
+  password,
+  rol_id,
+  creado_por,
+  cliente,
+  id_vehiculo
+}) => {
+
+  // Hashear contraseña
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   const result = await pool.query(
     `INSERT INTO usuario 
-    (nombre_completo, correo_electronico, password_hash, rol_id, creado_por, cliente_id,id_vehiculo, estado)
+    (nombre_completo, correo_electronico, password_hash, rol_id, creado_por, cliente_id, id_vehiculo, estado)
     VALUES ($1, $2, $3, $4, $5, $6, $7, true)
     RETURNING nombre_completo`,
     [
       nombre_completo,
       correo_electronico,
-      password_hash,
+      hashedPassword,
       rol_id,
-      creado_por,  
+      creado_por,
       cliente,
       id_vehiculo
     ]
