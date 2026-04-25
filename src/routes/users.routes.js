@@ -75,4 +75,23 @@ router.put('/inactivateUser', authMiddleware, async (req, res) => {
     }
 });
 
+//Crear usuario
+router.post('/register', authMiddleware, async (req, res) => {
+  try {
+
+    console.log("BODY:", req.body); // 👈 CLAVE
+
+    const user = await userService.createUser(req.body);
+
+    res.status(200).json({
+      message: 'Usuario Creado correctamente',
+      user
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = router;

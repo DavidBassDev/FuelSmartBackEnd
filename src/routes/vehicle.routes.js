@@ -34,4 +34,5 @@ router.get('/listAllVehicles', async (req, res) => {
     res.status(500).json({ message: 'Error al listar todos los vehículos' });
   }
 });
+
 module.exports = router;

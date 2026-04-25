@@ -49,5 +49,6 @@ const listAllVehicles = async () => {
 };
 module.exports = {
   listVehicles,
-  listAllVehicles
+  listAllVehicles,
+  
 };
