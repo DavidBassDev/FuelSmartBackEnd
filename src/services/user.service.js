@@ -158,20 +158,21 @@ exports.inactivateUser = async ({ id_usuario }) => {
 
 //CREAR USUARIO
 
-exports.createUser = async ({ nameUser, email, hashedPassword, id_rol, createdBy,cliente }) => {
+exports.createUser = async ({ nombre_completo, correo_electronico, password_hash, rol_id, creado_por,cliente,id_vehiculo }) => {
 
   const result = await pool.query(
     `INSERT INTO usuario 
-    (nombre_completo, correo_electronico, password_hash, rol_id, creado_por, cliente, estado)
-    VALUES ($1, $2, $3, $4, $5, $6, true)
-    RETURNING nombre_completo, correo_electronico, rol_id`,
+    (nombre_completo, correo_electronico, password_hash, rol_id, creado_por, cliente_id,id_vehiculo, estado)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, true)
+    RETURNING nombre_completo`,
     [
       nombre_completo,
-      email,
-      hashedPassword,
-      id_rol,
-      createdBy,  
-      cliente
+      correo_electronico,
+      password_hash,
+      rol_id,
+      creado_por,  
+      cliente,
+      id_vehiculo
     ]
   );
 
