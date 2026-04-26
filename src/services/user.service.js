@@ -77,7 +77,7 @@ ORDER BY u.id_usuario;
   }
 };
 
-//listar todos los usuarios
+//listar todos los admins
 exports.listAdmin = async ({ rol }) => {
   try {
 
@@ -113,6 +113,30 @@ ORDER BY u.id_usuario;
   }
 };
 
+//listar todos los usuarios
+exports.listAllUsers = async ({ }) => {
+
+
+  try {
+    const query = `
+   SELECT 
+   id_usuario,
+   nombre_completo
+   FROM usuario 
+   ORDER BY nombre_completo ASC;
+    `;
+
+    const result = await pool.query(query);
+
+    return {
+      users: result.rows || []
+    };
+
+  } catch (error) {
+    console.error("Error en listar usuarios:", error.message);
+    throw error;
+  }
+};
 
 //Editar usuario
 

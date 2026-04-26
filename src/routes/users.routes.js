@@ -47,6 +47,20 @@ router.get('/listAdmin', authMiddleware, async (req, res) => {
     }
 });
 
+//listar todos los usuarios
+router.get('/listAllUsers', authMiddleware, async (req, res) => {
+    try {
+        const users = await userService.listAllUsers({
+
+        });
+
+        res.json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error al listar todos los usuarios' });
+    }
+});
+
 // editar usuario
 router.put('/editUser', authMiddleware, async (req, res) => {
     try {
