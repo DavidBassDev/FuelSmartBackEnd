@@ -42,42 +42,60 @@ const listAllVehicles = async () => {
 };
 
 //Crear vehiculo
-const createVehicle = async ({
-  usuario_id,
-  placa,
-  rendimiento_teorico,
-  cupo_combustible,
-  creado_por,
-  id_tipo_vehiculo,
-  rendimiento
-}) => {
-  const result = await pool.query(
-    `INSERT INTO vehiculo 
-    (
-      usuario_id, 
-      placa, 
-      rendimiento_teorico, 
-      cupo_combustible, 
-      fecha_creacion, 
-      creado_por, 
-      id_tipo_vehiculo, 
-      rendimiento, 
-      estado
-    )
-    VALUES ($1, $2, $3, $4, NOW(), $5, $6, $7, true)
-    RETURNING placa;`,
-    [
-      usuario_id,
-      placa,
-      rendimiento_teorico,
-      cupo_combustible,
-      creado_por,
-      id_tipo_vehiculo,
-      rendimiento
-    ]
-  );
+const createVehicle = async (data) => {
+  const {
+    usuario_id,
+    placa,
+    rendimiento_teorico,
+    cupo_combustible,
+    creado_por,
+    id_tipo_vehiculo,
+    rendimiento,
+    id_proveedor // 👈 ESTE TE FALTA
+  } = data;
 
-  return result.rows[0];
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    //Crear vehículo
+    const vehicleResult = await client.query(
+      `INSERT INTO vehiculo 
+      (usuario_id, placa, rendimiento_teorico, cupo_combustible, fecha_creacion, creado_por, id_tipo_vehiculo, rendimiento, estado)
+      VALUES ($1,$2,$3,$4,NOW(),$5,$6,$7,true)
+      RETURNING id_vehiculo;`,
+      [
+        usuario_id,
+        placa,
+        rendimiento_teorico,
+        cupo_combustible,
+        creado_por,
+        id_tipo_vehiculo,
+        rendimiento
+      ]
+    );
+
+    const idVehiculo = vehicleResult.rows[0].id_vehiculo;
+
+    //Insertar relacion con proveedor
+    await client.query(
+      `INSERT INTO vehiculo_proveedor 
+      (id_vehiculo, id_proveedor, cupo_asignado, cupo_consumido)
+      VALUES ($1, $2, 0, 0);`,
+      [idVehiculo, id_proveedor]
+    );
+
+    await client.query('COMMIT');
+
+    return { idVehiculo };
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };
 
 
