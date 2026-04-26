@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const controller = require('../controllers/vehicle.controller');
 const authMiddleware = require('../middlewares/authMiddleware');
 const vehiculoService = require('../services/vehicle.service');
 
@@ -35,6 +35,8 @@ router.get('/listAllVehicles', async (req, res) => {
     res.status(500).json({ message: 'Error al listar todos los vehículos' });
   }
 });
+//TRAER LOS TIPOS DE VEHICULOS
+router.get('/listVehiclesType', controller.listVehicleTypes);
 
 //CREAR VEHICULO
 router.post('/create', authMiddleware, async (req, res) => {

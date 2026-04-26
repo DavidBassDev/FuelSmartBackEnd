@@ -1,5 +1,8 @@
 const pool = require('../models/db');
 
+
+
+//listar todos los vehiculos segun rol
 const listVehicles = async ({ userId, rol }) => {
   try {
     let query;
@@ -25,6 +28,8 @@ const listVehicles = async ({ userId, rol }) => {
   }
 };
 
+//traer todas las placas, con su id
+
 const listAllVehicles = async () => {
   try {
     const query = `SELECT id_vehiculo, placa FROM vehiculo`;
@@ -36,6 +41,7 @@ const listAllVehicles = async () => {
   }
 };
 
+//Crear vehiculo
 const createVehicle = async ({
   usuario_id,
   placa,
@@ -64,8 +70,26 @@ const createVehicle = async ({
   return result.rows[0];
 };
 
+//Listar tipos de vehiculo
+const getVehicleType = async () => {
+  try {
+    const query = `
+      SELECT id_tipovehiculo, nombre
+      FROM tipo_vehiculo
+      ORDER BY nombre ASC
+    `;
+    const result = await pool.query(query);
+
+    return result.rows;
+  } catch (error) {
+    console.error("Error en listar tipos de vehiculos: ", error.message);
+    throw error;
+  }
+};
+
 module.exports = {
   listVehicles,
   listAllVehicles,
   createVehicle,
+  getVehicleType,
 };

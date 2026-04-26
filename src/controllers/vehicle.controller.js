@@ -24,7 +24,7 @@ exports.listVehicles = async (req, res) => {
 //todos los vehiculos
 exports.listAllVehicles = async (req, res) => {
   try {
- 
+
     const vehiculos = await vehiculoService.listAllVehicles({
 
     });
@@ -38,6 +38,16 @@ exports.listAllVehicles = async (req, res) => {
       message: 'Error al listar todos los vehículos',
       error: error.message
     });
+  }
+};
+
+//Exportar todos los tipos de vehiculos
+exports.listVehicleTypes = async (req, res) => {
+  try {
+    const vehicleType = await vehiculoService.getVehicleType();
+    res.json(vehicleType);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 };
 
