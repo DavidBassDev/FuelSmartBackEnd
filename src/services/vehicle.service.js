@@ -51,7 +51,7 @@ const createVehicle = async (data) => {
     creado_por,
     id_tipo_vehiculo,
     rendimiento,
-    id_proveedor // 👈 ESTE TE FALTA
+    id_proveedor 
   } = data;
 
   const client = await pool.connect();
