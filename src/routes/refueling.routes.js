@@ -23,7 +23,6 @@ router.get(
 // TOTAL GALONES POR MES Y VEHÍCULO (1 vehículo)
 router.get(
   '/totalByMonth',
-  authMiddleware,
   refuelingController.refuelingByPlateAndMonth
 );
 
