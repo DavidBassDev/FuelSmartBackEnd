@@ -2,12 +2,12 @@ const refuelingService = require('../services/refueling.service');
 exports.createRefueling = async (req, res) => {
   try {
 
-    // 📸 Imagen (si viene)
+    //Imagen
     const imagePath = req.file
       ? `/uploads/vouchers/${req.file.filename}`
       : null;
 
-    // 📦 Datos del body
+    //  Datos del body
     const {
       vehiculo_id,
       usuario_id,
@@ -21,7 +21,7 @@ exports.createRefueling = async (req, res) => {
 
     } = req.body;
 
-    // 💾 Guardar en BD
+    // Guardar en BD
     const result = await refuelingService.createRefueling({
       vehiculo_id,
       usuario_id,
@@ -32,7 +32,7 @@ exports.createRefueling = async (req, res) => {
       odometro,
       numero_soporte,
       comentario,
-      imagen_voucher: imagePath // 👈 AQUÍ VA LA RUTA
+      imagen_voucher: imagePath // LA RUTA
     });
 
     res.status(201).json(result);
@@ -54,5 +54,35 @@ exports.getRefuelingPettyCash = async (req, res) => {
   } catch (error) {
     console.error("Error:", error.message);
     res.status(500).json({ error: error.message });
+  }
+};
+
+//TRAER LOS REPOSTAJES POR PLACA Y MES
+exports.refuelingByPlateAndMonth = async (req, res) => {
+  try {
+    const { vehiculo_id, month } = req.query;
+
+    if (!vehiculo_id || !month) {
+      return res.status(400).json({
+        ok: false,
+        message: 'vehiculo_id y month son requeridos'
+      });
+    }
+
+    const data = await refuelingService.refuelingByPlateAndMonth({
+      vehiculo_id: Number(vehiculo_id),
+      month: Number(month)
+    });
+
+    return res.json({
+      ok: true,
+      data
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      message: error.message
+    });
   }
 };

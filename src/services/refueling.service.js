@@ -3,20 +3,20 @@ const router = express.Router();
 const pool = require('../models/db');
 
 exports.createRefueling = async ({
-    vehiculo_id,
-    usuario_id,
-    proveedor_id,
-    fecha,
-    galones,
-    valor_total,
-    odometro,
-    numero_soporte,
-    comentario,
-    imagen_voucher
+  vehiculo_id,
+  usuario_id,
+  proveedor_id,
+  fecha,
+  galones,
+  valor_total,
+  odometro,
+  numero_soporte,
+  comentario,
+  imagen_voucher
 }) => {
-    try {
+  try {
 
-        const query = `
+    const query = `
       INSERT INTO repostaje (
         vehiculo_id,
         usuario_id,
@@ -33,31 +33,31 @@ exports.createRefueling = async ({
       RETURNING *;
     `;
 
-        const params = [
-            vehiculo_id,
-            usuario_id,
-            proveedor_id,
-            fecha,
-            galones,
-            valor_total,
-            odometro,
-            numero_soporte,
-            comentario,
-            imagen_voucher
-        ];
+    const params = [
+      vehiculo_id,
+      usuario_id,
+      proveedor_id,
+      fecha,
+      galones,
+      valor_total,
+      odometro,
+      numero_soporte,
+      comentario,
+      imagen_voucher
+    ];
 
-        const result = await pool.query(query, params);
+    const result = await pool.query(query, params);
 
-        return result.rows[0];
+    return result.rows[0];
 
-    } catch (error) {
-        console.error("Error en createRefueling:", error.message);
-        throw error;
-    }
+  } catch (error) {
+    console.error("Error en createRefueling:", error.message);
+    throw error;
+  }
 };
 
 //MOSTRAR REPOSTAJE BAJO CAJA MENOR
-exports.refuelingPettyCash = async ({ id_repostaje}) => {
+exports.refuelingPettyCash = async ({ id_repostaje }) => {
 
   const result = await pool.query(
     `SELECT 
@@ -79,7 +79,23 @@ exports.refuelingPettyCash = async ({ id_repostaje}) => {
     throw new Error('repostaje no encontrado');
   }
 
- 
+
+
+  return result.rows[0];
+};
+
+//CANTIDAD DE GALONES CONSUMIDOS POR MES ACTUAL Y VEHICULO
+exports.refuelingByPlateAndMonth = async ({ vehiculo_id, month }) => {
+  const result = await pool.query(
+    `
+    SELECT 
+      COALESCE(SUM(galones_suministrados), 0) AS total_galones
+    FROM repostaje
+    WHERE vehiculo_id = $1
+    AND EXTRACT(MONTH FROM fecha_repostaje) = $2
+    `,
+    [vehiculo_id, month]
+  );
 
   return result.rows[0];
 };

@@ -17,4 +17,11 @@ router.get(
   refuelingController.getRefuelingPettyCash
 );
 
+//TOTAL GALONES POR MES Y VEHICULO
+router.get(
+  '/totalByMonth',
+  authMiddleware,
+  refuelingController.refuelingByPlateAndMonth
+);
+
 module.exports = router;
