@@ -3,4 +3,6 @@ const router = express.Router();
 const controller = require('../controllers/client.controller');
 router.get('/', controller.getClient);
 router.get('/listPlates', controller.getPlatesByClient);
+router.get('/listVehicles', controller.getVehiclesByClient);
+
 module.exports = router;

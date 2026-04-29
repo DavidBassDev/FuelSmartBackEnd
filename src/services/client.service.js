@@ -37,7 +37,7 @@ exports.getPlatesByClient = async ({ id_cliente, rol }) => {
     `);
 
   } else {
-    
+
     result = await pool.query(
       `SELECT c.id_cliente,
               c.nombre AS cliente,
@@ -50,6 +50,33 @@ exports.getPlatesByClient = async ({ id_cliente, rol }) => {
       [id_cliente]
     );
   }
+
+  return result.rows || [];
+};
+
+
+//TRAER CLIENTES Y VEHICULOS 
+exports.getVehiclesByClient = async ({ id_cliente }) => {
+  const result = await pool.query(
+    `SELECT 
+        c.id_cliente,
+        c.nombre AS cliente,
+        COALESCE(
+            JSON_AGG(
+                JSON_BUILD_OBJECT(
+                    'id_vehiculo', v.id_vehiculo,
+                    'placa', v.placa
+                )
+            ) FILTER (WHERE v.id_vehiculo IS NOT NULL),
+            '[]'
+        ) AS vehiculos
+    FROM cliente c
+    LEFT JOIN usuario u ON u.cliente_id = c.id_cliente
+    LEFT JOIN vehiculo v ON v.usuario_id = u.id_usuario
+    WHERE c.id_cliente = $1
+    GROUP BY c.id_cliente, c.nombre;`,
+    [id_cliente]
+  );
 
   return result.rows || [];
 };

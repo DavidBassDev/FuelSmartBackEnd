@@ -33,3 +33,32 @@ exports.getPlatesByClient = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+// TRAER VEHICULOS POR CLIENTE
+exports.getVehiclesByClient = async (req, res) => {
+  try {
+    const { id_cliente } = req.query;
+    const id = parseInt(id_cliente);
+
+    if (!id_cliente || isNaN(id)) {
+      return res.status(400).json({
+        ok: false,
+        error: "id_cliente requerido"
+      });
+    }
+
+    const data = await service.getVehiclesByClient({
+      id_cliente: id,
+    });
+
+    res.json({
+      ok: true,
+      data: data || null
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+};
