@@ -38,6 +38,9 @@ router.get('/listAllVehicles', async (req, res) => {
 //TRAER LOS TIPOS DE VEHICULOS
 router.get('/listVehiclesType', controller.listVehicleTypes);
 
+//TRAER VEHICULO POR ID
+router.get('/getVehicle/:vehiculo_id', controller.getVehicle);
+
 //CREAR VEHICULO
 router.post('/create', authMiddleware, async (req, res) => {
   try {

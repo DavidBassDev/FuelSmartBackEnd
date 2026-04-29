@@ -28,8 +28,39 @@ const listVehicles = async ({ userId, rol }) => {
   }
 };
 
-//traer todas las placas, con su id
+//TRAER SOLO EL VEHICULO
+const getVehicle = async ({ vehiculo_id }) => {
+  try {
+    const query = `
+      SELECT 
+        v.placa,
+        v.rendimiento_teorico,
+        u.nombre_completo AS nombre_usuario,
+        v.cupo_combustible,
+        v.estado,
+        tv.nombre AS tipo_vehiculo
+      FROM vehiculo v
+      INNER JOIN usuario u 
+        ON v.usuario_id = u.id_usuario
+      INNER JOIN tipo_vehiculo tv 
+        ON v.id_tipo_vehiculo = tv.id_tipovehiculo
+      WHERE v.id_vehiculo = $1;
+    `;
 
+    const values = [vehiculo_id];
+
+    const { rows } = await pool.query(query, values);
+
+    // retornar solo un vehículo
+    return rows[0];
+
+  } catch (error) {
+    console.error('Error en getVehicle:', error);
+    throw error;
+  }
+};
+
+//traer todas las placas, con su id
 const listAllVehicles = async () => {
   try {
     const query = `SELECT id_vehiculo, placa FROM vehiculo`;
@@ -51,7 +82,7 @@ const createVehicle = async (data) => {
     creado_por,
     id_tipo_vehiculo,
     rendimiento,
-    id_proveedor 
+    id_proveedor
   } = data;
 
   const client = await pool.connect();
@@ -121,4 +152,5 @@ module.exports = {
   listAllVehicles,
   createVehicle,
   getVehicleType,
+  getVehicle,
 };

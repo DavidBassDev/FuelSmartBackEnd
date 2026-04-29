@@ -41,6 +41,45 @@ exports.listAllVehicles = async (req, res) => {
   }
 };
 
+// traer solo un vehiculo
+exports.getVehicle = async (req, res) => {
+  try {
+    const { vehiculo_id } = req.params;
+
+    if (!vehiculo_id) {
+      return res.status(400).json({
+        ok: false,
+        message: 'vehiculo_id es requerido'
+      });
+    }
+
+    const vehiculo = await vehiculoService.getVehicle({
+      vehiculo_id
+    });
+
+    if (!vehiculo) {
+      return res.status(404).json({
+        ok: false,
+        message: 'Vehículo no encontrado'
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      data: vehiculo
+    });
+
+  } catch (error) {
+    console.error('Error en controller traer vehiculo:', error);
+
+    res.status(500).json({
+      ok: false,
+      message: 'Error al traer el vehículo',
+      error: error.message
+    });
+  }
+};
+
 //Exportar todos los tipos de vehiculos
 exports.listVehicleTypes = async (req, res) => {
   try {
