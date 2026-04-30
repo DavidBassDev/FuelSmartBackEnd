@@ -123,3 +123,35 @@ exports.getVehiclesWithGallonsByClient = async (req, res) => {
     });
   }
 };
+
+//TRAER LISTA DE TODOS LOS CONSUMOS DE UNA PLACA, MES ACTUAL
+// TRAER LISTA DE CONSUMOS DE UN VEHICULO (MES ACTUAL)
+exports.getVehiclesWithGallonsList = async (req, res) => {
+  try {
+    const { vehiculo_id } = req.query;
+
+    if (!vehiculo_id) {
+      return res.status(400).json({
+        ok: false,
+        message: "vehiculo_id es requerido",
+      });
+    }
+
+    const data = await refuelingService.getVehiclesWithGallonsList({
+      vehiculo_id: Number(vehiculo_id),
+    });
+
+    return res.json({
+      ok: true,
+      data,
+    });
+
+  } catch (error) {
+    console.error("Error trayendo listado:", error);
+
+    return res.status(500).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+};

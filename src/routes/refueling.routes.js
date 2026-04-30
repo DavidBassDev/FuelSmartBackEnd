@@ -32,5 +32,11 @@ router.get(
   authMiddleware,
   refuelingController.getVehiclesWithGallonsByClient
 );
+//TODOS LOS CONSUMOS DE UN VEHICULO EN MES ACTUAL
+router.get(
+  '/refuelingPlate',
+  authMiddleware,
+  refuelingController.getVehiclesWithGallonsList
+);
 
 module.exports = router;

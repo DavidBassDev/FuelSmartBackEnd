@@ -120,6 +120,29 @@ exports.getVehiclesWithGallonsByClient = async ({ id_cliente, month }) => {
     ORDER BY v.placa ASC;
     `,
     [id_cliente, month]
+  );  
+
+  return result.rows;
+};
+
+
+//TODOS LOS CONSMOS DE UN VEHICULO EN EL MES
+exports.getVehiclesWithGallonsList = async ({ vehiculo_id }) => {
+  const result = await pool.query(
+    `
+    SELECT
+      f.id_repostaje,
+      f.tipo_repostaje,
+      f.galones_suministrados,
+      f.valor_dinero,
+      f.fecha_repostaje,
+      f.odometro
+    FROM repostaje f
+    WHERE f.vehiculo_id = $1
+      AND DATE_TRUNC('month', f.fecha_repostaje) = DATE_TRUNC('month', CURRENT_DATE)
+    ORDER BY f.fecha_repostaje DESC;
+    `,
+    [vehiculo_id]
   );
 
   return result.rows;
