@@ -42,6 +42,7 @@ exports.getTelemetryVehicleList = async ({ placa }) => {
       tiempo_total_seg,
       tiempo_detenido_seg,
       tiempo_ralenti_seg,
+      odometro_km,
 
       EXTRACT(MONTH FROM fecha)::int AS mes,
       EXTRACT(YEAR FROM fecha)::int AS anio
