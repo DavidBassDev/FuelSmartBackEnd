@@ -55,6 +55,10 @@ const fuelSupplierRouter = require('./routes/fuel.supplier.routes');
 app.use('/fuelSupplier', fuelSupplierRouter);
 
 
+//EXPONER DASHBOARD
+const dashboardRouter = require('./routes/dashboard.routes');
+app.use('/api/dashboard', dashboardRouter);
+
 
 
 const PORT = 3000;
