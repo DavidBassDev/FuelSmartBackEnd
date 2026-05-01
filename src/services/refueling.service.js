@@ -65,6 +65,7 @@ exports.refuelingPettyCash = async ({ id_repostaje }) => {
       r.valor_dinero,
       r.numero_soporte,
       r.vaucher_url,
+      r.comentario,
       v.placa AS plate
     FROM repostaje r
     JOIN vehiculo v 
