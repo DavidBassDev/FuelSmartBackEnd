@@ -59,6 +59,9 @@ app.use('/fuelSupplier', fuelSupplierRouter);
 const dashboardRouter = require('./routes/dashboard.routes');
 app.use('/api/dashboard', dashboardRouter);
 
+const fuelrequest = require('./routes/fuelrequest.routes');
+app.use('/api/fuelrequest', fuelrequest);
+
 
 
 const PORT = 3000;
