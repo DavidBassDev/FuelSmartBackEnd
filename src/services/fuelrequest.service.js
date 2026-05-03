@@ -120,3 +120,51 @@ exports.updateFuelRequestStatus = async ({
     client.release();
   }
 };
+//TRAER SOLICITUDES PENDIENTES POR AUMENTO
+exports.getPendingFuelRequests = async () => {
+  try {
+    const query = `
+      SELECT 
+        sc.id_solicitud,
+        sc.galones_solicitados,
+        sc.comentario,
+        sc.estado,
+
+        v.id_vehiculo,
+        v.placa,
+        v.cupo_combustible,
+
+        u.nombre_completo AS cliente,
+
+        COALESCE(SUM(r.galones_suministrados), 0) AS galones_consumidos
+
+      FROM solicitud_combustible sc
+
+      INNER JOIN vehiculo v 
+        ON sc.id_vehiculo = v.id_vehiculo
+
+      INNER JOIN usuario u 
+        ON v.usuario_id = u.id_usuario
+
+      LEFT JOIN repostaje r 
+        ON v.id_vehiculo = r.vehiculo_id
+
+      WHERE sc.estado = 'pendiente'
+
+      GROUP BY 
+        sc.id_solicitud,
+        v.id_vehiculo,
+        u.nombre_completo
+
+      ORDER BY sc.id_solicitud DESC;
+    `;
+
+    const result = await pool.query(query);
+
+    return result.rows;
+
+  } catch (error) {
+    console.error("Error obteniendo solicitudes:", error);
+    throw error;
+  }
+};

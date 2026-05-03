@@ -16,5 +16,22 @@ router.put('/updateFuelRequestStatus', authMiddleware, async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+//CONSULTA
+router.get('/pendingRequests', authMiddleware, async (req, res) => {
+  try {
+    const data = await service.getPendingFuelRequests();
+
+    res.status(200).json({
+      ok: true,
+      data,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+});
 
 module.exports = router;
