@@ -112,3 +112,25 @@ exports.inactivateVehicle = async (req, res) => {
   }
 };
 
+
+//ACTIVAR VEHICULO
+exports.activateVehicle = async (req, res) => {
+  try {
+    const { id_vehiculo } = req.body;
+
+    const data = await vehiculoService.activateVehicle({ id_vehiculo });
+
+    res.status(200).json({
+      ok: true,
+      message: 'Vehículo activado correctamente',
+      data,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+};

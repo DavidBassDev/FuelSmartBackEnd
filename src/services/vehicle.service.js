@@ -177,6 +177,30 @@ const inactivateVehicle = async ({ id_vehiculo }) => {
   }
 };
 
+//ACTIVAR VEHICULO
+const activateVehicle = async ({ id_vehiculo }) => {
+  try {
+    const result = await pool.query(
+      `UPDATE vehiculo
+       SET estado = true,
+           fecha_actualizacion = NOW()
+       WHERE id_vehiculo = $1
+       RETURNING id_vehiculo, estado`,
+      [id_vehiculo]
+    );
+
+    if (result.rows.length === 0) {
+      throw new Error("Vehículo no encontrado");
+    }
+
+    return result.rows[0];
+
+  } catch (error) {
+    console.error("Error inactivando vehículo:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   listVehicles,
   listAllVehicles,
@@ -184,4 +208,5 @@ module.exports = {
   getVehicleType,
   getVehicle,
   inactivateVehicle,
+  activateVehicle,
 };

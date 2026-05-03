@@ -67,5 +67,11 @@ router.put(
   controller.inactivateVehicle
 );
 
+//ACTIVAR VEHICULO
+router.put(
+  '/activateVehicle',
+  authMiddleware,
+  controller.activateVehicle
+);
 
 module.exports = router;
