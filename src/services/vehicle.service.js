@@ -34,16 +34,25 @@ const getVehicle = async ({ vehiculo_id }) => {
     const query = `
       SELECT 
         v.placa,
+        v.id_vehiculo,
         v.rendimiento_teorico,
         u.nombre_completo AS nombre_usuario,
         v.cupo_combustible,
         v.estado,
-        tv.nombre AS tipo_vehiculo
+        tv.nombre AS tipo_vehiculo,
+        vp.id_proveedor  -- 🔥 AQUÍ
+
       FROM vehiculo v
+
       INNER JOIN usuario u 
         ON v.usuario_id = u.id_usuario
+
       INNER JOIN tipo_vehiculo tv 
         ON v.id_tipo_vehiculo = tv.id_tipovehiculo
+
+      LEFT JOIN vehiculo_proveedor vp   -- 🔥 JOIN NUEVO
+        ON v.id_vehiculo = vp.id_vehiculo
+
       WHERE v.id_vehiculo = $1;
     `;
 
@@ -51,7 +60,6 @@ const getVehicle = async ({ vehiculo_id }) => {
 
     const { rows } = await pool.query(query, values);
 
-    // retornar solo un vehículo
     return rows[0];
 
   } catch (error) {

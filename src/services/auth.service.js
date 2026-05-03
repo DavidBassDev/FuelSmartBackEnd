@@ -39,6 +39,7 @@ exports.login = async ({ correo_electronico, password }) => {
         u.nombre_completo,
         u.correo_electronico,
         u.password_hash,
+        u.id_vehiculo,
         r.nombre AS rol
      FROM usuario u
      JOIN rol r ON u.rol_id = r.id_rol
@@ -82,8 +83,9 @@ exports.login = async ({ correo_electronico, password }) => {
     usuario: {
       id: user.id_usuario,
       nombre: user.nombre_completo,
-      correo: user.correo_electronico,
-      rol: user.rol
+      correo: user.correo_electronico,  
+      rol: user.rol,
+      idVehicle: user.id_vehiculo
     }
   };
 };

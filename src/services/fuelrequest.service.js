@@ -19,30 +19,104 @@ exports.createFuelRequest = async ({
     id_proveedor,
     galones_solicitados,
     comentario,
-    solicitado_por,
+    solicitado_por, // 🔥 ESTE ES EL QUE FALTA
   ];
+
+  console.log("VALUES:", values); // 👈 DEBUG
 
   const result = await pool.query(query, values);
   return result.rows[0];
 };
 
-//MANEJAR LA SOLICITUD ANTERIOR
+//MANEJAR SOLICITUD
 exports.updateFuelRequestStatus = async ({
   id_solicitud,
   estado,
   respondido_por,
 }) => {
-  const query = `
-    UPDATE solicitud_combustible
-    SET estado = $1,
-        fecha_respuesta = NOW(),
-        respondido_por = $2
-    WHERE id_solicitud = $3
-    RETURNING *;
-  `;
+  const client = await pool.connect();
 
-  const values = [estado, respondido_por, id_solicitud];
+  try {
+    await client.query('BEGIN');
 
-  const result = await pool.query(query, values);
-  return result.rows[0];
+    // 1️⃣ Actualizar solicitud
+    const updateRequestQuery = `
+      UPDATE solicitud_combustible
+      SET estado = $1,
+          fecha_respuesta = NOW(),
+          respondido_por = $2
+      WHERE id_solicitud = $3
+      RETURNING *;
+    `;
+
+    const requestResult = await client.query(updateRequestQuery, [
+      estado,
+      respondido_por,
+      id_solicitud,
+    ]);
+
+    const request = requestResult.rows[0];
+
+    // 👉 si no es aprobado, termina aquí
+    if (estado !== 'aprobado') {
+      await client.query('COMMIT');
+      return request;
+    }
+
+    // 2️⃣ Obtener datos del vehículo + proveedor
+    const dataQuery = `
+      SELECT 
+        sc.galones_solicitados,
+        sc.id_vehiculo,
+        vp.id_proveedor
+      FROM solicitud_combustible sc
+      LEFT JOIN vehiculo_proveedor vp 
+        ON sc.id_vehiculo = vp.id_vehiculo
+      WHERE sc.id_solicitud = $1;
+    `;
+
+    const dataResult = await client.query(dataQuery, [id_solicitud]);
+    const data = dataResult.rows[0];
+
+    if (!data) throw new Error("Solicitud no encontrada");
+
+    const { galones_solicitados, id_vehiculo, id_proveedor } = data;
+
+    // 3️⃣ Update proveedor (sumar cupo)
+    const updateProveedorQuery = `
+      UPDATE vehiculo_proveedor
+      SET cupo_asignado = COALESCE(cupo_asignado, 0) + $1
+      WHERE id_vehiculo = $2
+        AND id_proveedor = $3;
+    `;
+
+    await client.query(updateProveedorQuery, [
+      galones_solicitados,
+      id_vehiculo,
+      id_proveedor,
+    ]);
+
+    // 4️⃣ Update vehículo (sumar cupo_combustible)
+    const updateVehiculoQuery = `
+      UPDATE vehiculo
+      SET cupo_combustible = COALESCE(cupo_combustible, 0) + $1
+      WHERE id_vehiculo = $2;
+    `;
+
+    await client.query(updateVehiculoQuery, [
+      galones_solicitados,
+      id_vehiculo,
+    ]);
+
+    await client.query('COMMIT');
+
+    return request;
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error("Error en updateFuelRequestStatus:", error);
+    throw error;
+  } finally {
+    client.release();
+  }
 };

@@ -1,24 +1,21 @@
 const service = require('../services/fuelrequest.service');
 
+
 exports.createFuelRequest = async (req, res) => {
   try {
     const { id_vehiculo, id_proveedor, galones_solicitados, comentario } = req.body;
 
-    const solicitado_por = req.user.id; //  viene del JWT del BD
+    const solicitado_por = req.user.id; // ✔️ ya existe
 
-    if (!id_vehiculo || !id_proveedor || !galones_solicitados) {
-      return res.status(400).json({
-        ok: false,
-        message: 'Campos obligatorios faltantes',
-      });
-    }
+    console.log("USER:", req.user);
+    console.log("ID USER:", solicitado_por);
 
     const data = await service.createFuelRequest({
       id_vehiculo,
       id_proveedor,
       galones_solicitados,
       comentario,
-      solicitado_por,
+      solicitado_por, // 🔥 ESTE ES EL QUE FALTABA
     });
 
     return res.status(201).json({
@@ -26,6 +23,7 @@ exports.createFuelRequest = async (req, res) => {
       message: 'Solicitud creada correctamente',
       data,
     });
+
   } catch (error) {
     console.error(error);
     res.status(500).json({
