@@ -172,7 +172,86 @@ exports.getPendingFuelRequests = async (id_solicitante) => {
     console.error("Error obteniendo solicitudes:", error);
     throw error;
   }
+
+  
 };
+
+//ADICIONAR GALONES
+exports.addFuelToVehicle = async ({
+  id_vehiculo,
+  galones,
+  id_usuario,
+}) => {
+  const client = await pool.connect();
+
+  try {
+    await client.query('BEGIN');
+
+    // 1️⃣ Obtener proveedor asociado al vehículo
+    const proveedorQuery = `
+      SELECT id_proveedor
+      FROM vehiculo_proveedor
+      WHERE id_vehiculo = $1
+      LIMIT 1;
+    `;
+
+    const proveedorResult = await client.query(proveedorQuery, [
+      id_vehiculo,
+    ]);
+
+    const proveedor = proveedorResult.rows[0];
+
+    if (!proveedor) {
+      throw new Error('No existe proveedor para este vehículo');
+    }
+
+    const { id_proveedor } = proveedor;
+
+    // 2️⃣ 🔥 Aumentar cupo en vehiculo_proveedor
+    const updateProveedorQuery = `
+      UPDATE vehiculo_proveedor
+      SET cupo_asignado = COALESCE(cupo_asignado, 0) + $1
+      WHERE id_vehiculo = $2
+        AND id_proveedor = $3
+      RETURNING cupo_asignado;
+    `;
+
+    const proveedorResultUpdate = await client.query(updateProveedorQuery, [
+      galones,
+      id_vehiculo,
+      id_proveedor,
+    ]);
+
+    // 3️⃣ 🔥 NUEVO: actualizar también tabla vehiculo
+    const updateVehiculoQuery = `
+      UPDATE vehiculo
+      SET cupo_combustible = COALESCE(cupo_combustible, 0) + $1
+      WHERE id_vehiculo = $2
+      RETURNING cupo_combustible;
+    `;
+
+    const vehiculoResult = await client.query(updateVehiculoQuery, [
+      galones,
+      id_vehiculo,
+    ]);
+
+    await client.query('COMMIT');
+
+    return {
+      proveedor: proveedorResultUpdate.rows[0],
+      vehiculo: vehiculoResult.rows[0],
+    };
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+};
+
+
+
 
 
 

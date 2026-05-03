@@ -76,3 +76,38 @@ exports.updateFuelRequestStatus = async (req, res) => {
     });
   }
 };
+
+ // 🔹 AUMENTAR CUPO DIRECTO
+exports.addFuelToVehicle = async (req, res) => {
+  try {
+    const { id_vehiculo, galones } = req.body;
+    const id_usuario = req.user.id;
+
+    // 🔥 validación básica
+    if (!id_vehiculo || !galones) {
+      return res.status(400).json({
+        ok: false,
+        message: 'id_vehiculo y galones son obligatorios',
+      });
+    }
+
+    const data = await service.addFuelToVehicle({
+      id_vehiculo,
+      galones,
+      id_usuario,
+    });
+
+    return res.status(200).json({
+      ok: true,
+      message: 'Cupo actualizado correctamente',
+      data,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      message: 'Error al actualizar cupo',
+    });
+  }
+};

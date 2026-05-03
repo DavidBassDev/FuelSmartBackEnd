@@ -48,6 +48,8 @@ router.get('/mypendingRequests', authMiddleware, async (req, res) => {
   }
 });
 
+//AUMENTAR CUPO VEHICULO
+router.post('/addFuel', authMiddleware, controller.addFuelToVehicle);
 
 
 module.exports = router;
