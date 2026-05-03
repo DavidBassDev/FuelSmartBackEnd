@@ -47,7 +47,7 @@ const clientRoutes = require('./modules/clients/client.routes');
 app.use('/clients', clientRoutes);
 
 //SIMULACION DATOS DE TELEMETRIA GPS
-const telemetriaRoutes = require('./modules/telemetry/telemetria.routes');
+const telemetriaRoutes = require('./modules/telemetry/telemetry.routes');
 app.use('/api/telemetria', telemetriaRoutes);
 
 //SIMULACION DE PROVEEDOR COMBUSTIBLE

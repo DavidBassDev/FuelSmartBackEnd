@@ -1,4 +1,4 @@
-const service = require('./telemetria.service');
+const service = require('./telemetry.service');
 
 exports.getTelemetriaMensual = async (req, res) => {
   try {
