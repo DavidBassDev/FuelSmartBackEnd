@@ -1,7 +1,5 @@
 const pool = require('../models/db');
 
-
-
 //listar todos los vehiculos segun rol
 const listVehicles = async ({ userId, rol }) => {
   try {
@@ -155,10 +153,35 @@ const getVehicleType = async () => {
   }
 };
 
+//INACTIVAR VEHICULO
+const inactivateVehicle = async ({ id_vehiculo }) => {
+  try {
+    const result = await pool.query(
+      `UPDATE vehiculo
+       SET estado = false,
+           fecha_actualizacion = NOW()
+       WHERE id_vehiculo = $1
+       RETURNING id_vehiculo, estado`,
+      [id_vehiculo]
+    );
+
+    if (result.rows.length === 0) {
+      throw new Error("Vehículo no encontrado");
+    }
+
+    return result.rows[0];
+
+  } catch (error) {
+    console.error("Error inactivando vehículo:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   listVehicles,
   listAllVehicles,
   createVehicle,
   getVehicleType,
   getVehicle,
+  inactivateVehicle,
 };

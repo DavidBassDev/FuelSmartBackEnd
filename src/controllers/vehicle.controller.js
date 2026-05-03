@@ -90,3 +90,25 @@ exports.listVehicleTypes = async (req, res) => {
   }
 };
 
+//INACTIVAR VEHICULO
+exports.inactivateVehicle = async (req, res) => {
+  try {
+    const { id_vehiculo } = req.body;
+
+    const data = await vehiculoService.inactivateVehicle({ id_vehiculo });
+
+    res.status(200).json({
+      ok: true,
+      message: 'Vehículo inactivado correctamente',
+      data,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+};
+

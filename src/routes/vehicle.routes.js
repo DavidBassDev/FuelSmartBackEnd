@@ -45,7 +45,7 @@ router.get('/getVehicle/:vehiculo_id', controller.getVehicle); //paso el id por 
 router.post('/create', authMiddleware, async (req, res) => {
   try {
 
-    console.log("BODY:", req.body); 
+    console.log("BODY:", req.body);
 
     const user = await vehiculoService.createVehicle(req.body);
 
@@ -60,6 +60,12 @@ router.post('/create', authMiddleware, async (req, res) => {
   }
 });
 
+//INACTIVAR VEHICULO
+router.put(
+  '/inactivateVehicle',
+  authMiddleware,
+  controller.inactivateVehicle
+);
 
 
 module.exports = router;

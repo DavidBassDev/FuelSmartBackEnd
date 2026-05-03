@@ -125,38 +125,41 @@ exports.getPendingFuelRequests = async () => {
   try {
     const query = `
       SELECT 
-        sc.id_solicitud,
-        sc.galones_solicitados,
-        sc.comentario,
-        sc.estado,
+  sc.id_solicitud,
+  sc.galones_solicitados,
+  sc.comentario,
+  sc.estado,
 
-        v.id_vehiculo,
-        v.placa,
-        v.cupo_combustible,
+  v.id_vehiculo,
+  v.placa,
+  v.cupo_combustible,
 
-        u.nombre_completo AS cliente,
+  COALESCE(c.nombre, 'Sin cliente') AS cliente, -- 🔥 fallback
 
-        COALESCE(SUM(r.galones_suministrados), 0) AS galones_consumidos
+  COALESCE(SUM(r.galones_suministrados), 0) AS galones_consumidos
 
-      FROM solicitud_combustible sc
+FROM solicitud_combustible sc
 
-      INNER JOIN vehiculo v 
-        ON sc.id_vehiculo = v.id_vehiculo
+INNER JOIN vehiculo v 
+  ON sc.id_vehiculo = v.id_vehiculo
 
-      INNER JOIN usuario u 
-        ON v.usuario_id = u.id_usuario
+INNER JOIN usuario u 
+  ON v.usuario_id = u.id_usuario
 
-      LEFT JOIN repostaje r 
-        ON v.id_vehiculo = r.vehiculo_id
+LEFT JOIN cliente c   -- 🔥 CAMBIO CLAVE
+  ON u.cliente_id = c.id_cliente
 
-      WHERE sc.estado = 'pendiente'
+LEFT JOIN repostaje r 
+  ON v.id_vehiculo = r.vehiculo_id
 
-      GROUP BY 
-        sc.id_solicitud,
-        v.id_vehiculo,
-        u.nombre_completo
+WHERE sc.estado = 'pendiente'
 
-      ORDER BY sc.id_solicitud DESC;
+GROUP BY 
+  sc.id_solicitud,
+  v.id_vehiculo,
+  c.nombre
+
+ORDER BY sc.id_solicitud DESC;
     `;
 
     const result = await pool.query(query);
