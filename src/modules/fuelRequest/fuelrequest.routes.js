@@ -34,4 +34,26 @@ router.get('/pendingRequests', authMiddleware, async (req, res) => {
   }
 });
 
+// CONSULTA DEL CONDUCTOR SOBRE SUS SOLICITUDES
+router.get('/mypendingRequests', authMiddleware, async (req, res) => {
+  try {
+    const idSolicitante = req.user.id;
+
+    const data = await service.getPendingFuelRequests(idSolicitante);
+
+    res.status(200).json({
+      ok: true,
+      data,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      ok: false,
+      message: error.message,
+    });
+  }
+});
+
+
+
 module.exports = router;
