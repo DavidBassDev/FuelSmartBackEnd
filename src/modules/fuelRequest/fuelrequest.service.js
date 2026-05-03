@@ -120,6 +120,35 @@ exports.updateFuelRequestStatus = async ({
     client.release();
   }
 };
+
+//LISTAR SOLICITUDES DE AUMENTO
+exports.getAllPendingFuelRequests = async () => {
+  try {
+    const query = `
+      SELECT 
+        sc.id_solicitud,
+        sc.estado,
+        sc.galones_solicitados,
+        sc.comentario,
+        v.id_vehiculo,
+        v.placa,
+        v.cupo_combustible
+      FROM solicitud_combustible sc
+      INNER JOIN vehiculo v 
+        ON sc.id_vehiculo = v.id_vehiculo
+      WHERE sc.estado = 'pendiente'
+      ORDER BY sc.id_solicitud DESC;
+    `;
+
+    const result = await pool.query(query);
+
+    return result.rows;
+
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
 //TRAER SOLICITUDES PENDIENTES
 exports.getPendingFuelRequests = async (id_solicitante) => {
   try {
