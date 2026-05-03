@@ -11,21 +11,21 @@ app.use(cors());
 app.use(express.json());
 
 //ruta de autenticar despues de iniciar la app
-const authRoutes = require('./routes/auth.routes');
+const authRoutes = require('./modules/auth/auth.routes');
 app.use('/auth', authRoutes);
 //ruta de listar vehiculos
-const vehicleRoutes = require('./routes/vehicle.routes');
+const vehicleRoutes = require('./modules/vehicles/vehicle.routes');
 app.use('/vehicles', vehicleRoutes);
 
 //ruta de listar usuarios
-const userRoutes = require('./routes/users.routes');
+const userRoutes = require('./modules/users/users.routes');
 app.use('/users', userRoutes);
 
 app.get('/', (req, res) => {
   res.json({ message: 'API funcionando' });
 });
 //ruta para el repostaje
-const refuelingRoutes = require('./routes/refueling.routes');
+const refuelingRoutes = require('./modules/refueling/refueling.routes');
 app.use('/refueling', refuelingRoutes);
 
 
@@ -39,28 +39,28 @@ app.use(
 );
 
 //para listar roles
-const roleRoutes = require('./routes/role.routes');
+const roleRoutes = require('./modules/users/role.routes');
 app.use('/roles', roleRoutes);
 
 //para listar clientes
-const clientRoutes = require('./routes/client.routes');
+const clientRoutes = require('./modules/clients/client.routes');
 app.use('/clients', clientRoutes);
 
 //SIMULACION DATOS DE TELEMETRIA GPS
-const telemetriaRoutes = require('./routes/telemetria.routes');
+const telemetriaRoutes = require('./modules/telemetry/telemetria.routes');
 app.use('/api/telemetria', telemetriaRoutes);
 
 //SIMULACION DE PROVEEDOR COMBUSTIBLE
-const fuelSupplierRouter = require('./routes/fuel.supplier.routes');
+const fuelSupplierRouter = require('./modules/fuelSupplier/fuel.supplier.routes');
 app.use('/fuelSupplier', fuelSupplierRouter);
 
 
 //EXPONER DASHBOARD
-const dashboardRouter = require('./routes/dashboard.routes');
+const dashboardRouter = require('./modules/dashboard/dashboard.routes');
 app.use('/api/dashboard', dashboardRouter);
 
-const fuelrequest = require('./routes/fuelrequest.routes');
-app.use('/api/fuelrequest', fuelrequest);
+const fuelRequestRoutes = require('./modules/fuelRequest/fuelrequest.routes');
+app.use('/api/fuelrequest', fuelRequestRoutes);
 
 
 
