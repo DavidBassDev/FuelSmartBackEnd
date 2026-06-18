@@ -19,10 +19,10 @@ exports.createFuelRequest = async ({
     id_proveedor,
     galones_solicitados,
     comentario,
-    solicitado_por, // 🔥 ESTE ES EL QUE FALTA
+    solicitado_por,
   ];
 
-  console.log("VALUES:", values); // 👈 DEBUG
+  console.log("VALUES:", values); //DEBUG
 
   const result = await pool.query(query, values);
   return result.rows[0];
@@ -57,13 +57,13 @@ exports.updateFuelRequestStatus = async ({
 
     const request = requestResult.rows[0];
 
-    // 👉 si no es aprobado, termina aquí
+    // SI NO APRUEBA EL CODIGO LO TERMINO ACA
     if (estado !== 'aprobado') {
       await client.query('COMMIT');
       return request;
     }
 
-    // 2️⃣ Obtener datos del vehículo + proveedor
+    // Obtener datos del vehículo y proveedor combustible
     const dataQuery = `
       SELECT 
         sc.galones_solicitados,
@@ -82,7 +82,7 @@ exports.updateFuelRequestStatus = async ({
 
     const { galones_solicitados, id_vehiculo, id_proveedor } = data;
 
-    // 3️⃣ Update proveedor (sumar cupo)
+    // sumar cupo
     const updateProveedorQuery = `
       UPDATE vehiculo_proveedor
       SET cupo_asignado = COALESCE(cupo_asignado, 0) + $1
@@ -96,7 +96,7 @@ exports.updateFuelRequestStatus = async ({
       id_proveedor,
     ]);
 
-    // 4️⃣ Update vehículo (sumar cupo_combustible)
+    // Update vehiculo (sumar a cupo_combustible)
     const updateVehiculoQuery = `
       UPDATE vehiculo
       SET cupo_combustible = COALESCE(cupo_combustible, 0) + $1
@@ -221,7 +221,7 @@ exports.addFuelToVehicle = async ({
       id_proveedor,
     ]);
 
-    //Actualizar también tabla vehiculo
+  
     const updateVehiculoQuery = `
       UPDATE vehiculo
       SET cupo_combustible = COALESCE(cupo_combustible, 0) + $1

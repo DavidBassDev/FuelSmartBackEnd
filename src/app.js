@@ -61,9 +61,11 @@ const fuelRequestRoutes = require('./modules/fuelRequest/fuelrequest.routes');
 app.use('/api/fuelrequest', fuelRequestRoutes);
 
 
-
+//CAMBIAR SI AL PROBAR MI PROTOTIPO YA TIENEN ESTE PUERTO EN USO
 const PORT = 3000;
 
+
+//PARA IMPRIMIR EN TERMINAL QUE ESTA CORRIENDO EN QUE PUERTO
 app.listen(PORT, () => {
   console.log(`Servidor  en puerto ${PORT}`);
 });

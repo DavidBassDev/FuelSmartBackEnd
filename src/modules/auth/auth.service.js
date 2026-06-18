@@ -61,6 +61,7 @@ exports.login = async ({ correo_electronico, password }) => {
   };
 };
 
+//para registrar usuarios
 exports.register = async ({
   nombre_completo,
   correo_electronico,

@@ -1,6 +1,6 @@
 const service = require('./fuelrequest.service');
 
-// 🔹 CREAR SOLICITUD
+// CREAR SOLICITUD DE AUMENTO COMBUSTIBLE
 exports.createFuelRequest = async (req, res) => {
   try {
     const { id_vehiculo, id_proveedor, galones_solicitados, comentario } = req.body;
@@ -30,7 +30,7 @@ exports.createFuelRequest = async (req, res) => {
   }
 };
 
-// 🔹 LISTAR SOLICITUDES PENDIENTES 🔥
+// LISTAR SOLICITUDES PENDIENTES AL USUARIO 
 exports.getPendingFuelRequests = async (req, res) => {
   try {
     const data = await service.getPendingFuelRequests();
@@ -49,7 +49,7 @@ exports.getPendingFuelRequests = async (req, res) => {
   }
 };
 
-// 🔹 ACTUALIZAR ESTADO (APROBAR / RECHAZAR)
+// ACTUALIZAR ESTADO DE LA SOLICITUD
 exports.updateFuelRequestStatus = async (req, res) => {
   try {
     const { id_solicitud, estado } = req.body;
@@ -77,13 +77,13 @@ exports.updateFuelRequestStatus = async (req, res) => {
   }
 };
 
- // 🔹 AUMENTAR CUPO DIRECTO
+ //AUMENTAR CUPO SOLICITADO
 exports.addFuelToVehicle = async (req, res) => {
   try {
     const { id_vehiculo, galones } = req.body;
     const id_usuario = req.user.id;
 
-    // 🔥 validación básica
+
     if (!id_vehiculo || !galones) {
       return res.status(400).json({
         ok: false,

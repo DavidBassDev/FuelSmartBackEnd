@@ -124,8 +124,7 @@ exports.getVehiclesWithGallonsByClient = async (req, res) => {
   }
 };
 
-//TRAER LISTA DE TODOS LOS CONSUMOS DE UNA PLACA, MES ACTUAL
-// TRAER LISTA DE CONSUMOS DE UN VEHICULO (MES ACTUAL)
+//TRAER LISTA DE LOS CONSUMOS
 exports.getVehiclesWithGallonsList = async (req, res) => {
   try {
     const { vehiculo_id } = req.query;

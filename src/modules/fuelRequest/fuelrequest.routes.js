@@ -4,10 +4,10 @@ const controller = require('./fuelrequest.controller.js');
 const service = require('./fuelrequest.service.js');
 const authMiddleware = require('../../middlewares/authMiddleware.js');
 
-// 🔹 SOLICITUD
+// SOLICITUD
 router.post('/fuel-request', authMiddleware, controller.createFuelRequest);
 
-// 🔹 RESPUESTA
+// RESPUESTA
 router.put('/updateFuelRequestStatus', authMiddleware, async (req, res) => {
   try {
     const result = await service.updateFuelRequestStatus(req.body);
