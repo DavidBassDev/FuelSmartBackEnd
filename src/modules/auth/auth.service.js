@@ -1,36 +1,7 @@
 const pool = require('../../models/db');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
-const SECRET = process.env.JWT_SECRET || 'fuelsmart_secret';
-
-exports.register = async ({
-  nombre_completo,
-  correo_electronico,
-  password,
-  rol_id,
-  creado_por
-}) => {
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  const result = await pool.query(
-    `INSERT INTO usuario 
-    (nombre_completo, correo_electronico, password_hash, rol_id, creado_por)
-    VALUES ($1, $2, $3, $4, $5)
-    RETURNING id_usuario, nombre_completo, correo_electronico, rol_id`,
-    [
-      nombre_completo,
-      correo_electronico,
-      hashedPassword,
-      rol_id || 1,
-      creado_por || null
-    ]
-  );
-
-  return result.rows[0];
-};
-
+const SECRET = process.env.JWT_SECRET || 'fuelsmart_secret'; 
 exports.login = async ({ correo_electronico, password }) => {
 
   const result = await pool.query(
@@ -88,6 +59,33 @@ exports.login = async ({ correo_electronico, password }) => {
       idVehicle: user.id_vehiculo
     }
   };
+};
+
+exports.register = async ({
+  nombre_completo,
+  correo_electronico,
+  password,
+  rol_id,
+  creado_por
+}) => {
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const result = await pool.query(
+    `INSERT INTO usuario 
+    (nombre_completo, correo_electronico, password_hash, rol_id, creado_por)
+    VALUES ($1, $2, $3, $4, $5)
+    RETURNING id_usuario, nombre_completo, correo_electronico, rol_id`,
+    [
+      nombre_completo,
+      correo_electronico,
+      hashedPassword,
+      rol_id || 1,
+      creado_por || null
+    ]
+  );
+
+  return result.rows[0];
 };
 //Cambiar contraseña usuario
 exports.changePassword = async ({ id_usuario, password }) => {

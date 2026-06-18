@@ -1,9 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 
-
 const app = express();
-
 
 require('./models/db');
 //los middleware
